@@ -33,7 +33,8 @@ JPEG_BASE64_PREFIX = "data:image/jpeg;charset=utf-8;base64, "
 def main():
     start_server_async()
     cookies, login_captcha, register_captcha = process_index_captcha_bypass()
-    process_register(cookies, register_captcha)
+    login, password, recovery_code, captcha = process_register(cookies, register_captcha)
+    process_login(cookies, captcha, login, password, recovery_code)
 
 
 def process_index_captcha_bypass():
@@ -138,20 +139,33 @@ def process_register(cookies, register_captcha):
     recovery_code = recovery_div.get_text()
 
     select_city_payload = {
-        "city": "fef154eb-5300-46d7-916e-f60e6a1d193e" # Москва
+        "city": "fef154eb-5300-46d7-916e-f60e6a1d193e"  # Москва
     }
 
     select_city_resp = requests.post(f"{kraken_address}/select/city/", data=select_city_payload, cookies=cookies,
-                                  proxies=proxies, headers=headers)
+                                     proxies=proxies, headers=headers)
 
     print("Login: ", login, " Password: ", password, " Recovery Code: ", recovery_code)
     print("Cookies:", cookies)
 
-    return login, password, recovery_code
+    return login, password, recovery_code, captcha
 
 
-def process_login(cookies, login_captcha, username, password):
-    pass
+def process_login(cookies, captcha, username, password, recovery_code):
+    login_payload = {
+        "login": username,
+        "password": password,
+        "captcha": captcha.upper(),
+    }
+
+    login_resp = requests.post(f"{kraken_address}/entry/post/login", data=login_payload, cookies=cookies,
+                               proxies=proxies, headers=headers)
+
+    if "Магазины" in login_resp.text:
+        print("Авторизован")
+
+    print("After login. Login: ", username, " Password: ", password, " Recovery Code: ", recovery_code)
+    print("After login. Cookies:", cookies)
 
 
 def to_numbers(hex_string):
