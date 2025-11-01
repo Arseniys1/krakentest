@@ -22,8 +22,16 @@ BASE64_PNG = ""
 
 server_thread = None
 
+PNG_BASE64_PREFIX = "data:image/png;base64,  "
+JPEG_BASE64_PREFIX = "data:image/jpeg;charset=utf-8;base64, "
+
 
 def main():
+    start_server_async()
+    index_captcha_bypass()
+
+
+def index_captcha_bypass():
     global BASE64_PNG
 
     resp_index = requests.get(kraken_address, proxies=proxies, headers=headers)
@@ -31,8 +39,6 @@ def main():
                                 headers=headers)
     BASE64_PNG = resp_captcha.text
     print("Капча обновлена")
-
-    start_server_async()
 
     captcha = input("Enter Captcha Code: ")
 
@@ -54,7 +60,8 @@ def main():
         "TCK": hex_res,
     }
 
-    resp_index_tck = requests.get(f"{kraken_address}/?tck=2", cookies=index_tck_cookies, proxies=proxies, headers=headers)
+    resp_index_tck = requests.get(f"{kraken_address}/?tck=2", cookies=index_tck_cookies, proxies=proxies,
+                                  headers=headers)
 
     parsed_html = BeautifulSoup(resp_index_tck.text, "html.parser")
     captcha_base64 = parsed_html.find("img", attrs={"id": "captcha-img"})["src"]
@@ -81,7 +88,19 @@ def main():
                                        cookies=captcha_check_cookies,
                                        proxies=proxies, headers=headers)
 
-    print(resp_captcha_check.text)
+    parsed_login_register_page = BeautifulSoup(resp_captcha_check.text, "html.parser")
+
+    login_form = parsed_login_register_page.find("form", class_="authorization-block")
+    register_form = parsed_login_register_page.find("form", class_="authorization-block register_form")
+
+    login_captcha_img = login_form.find_all("img")
+    register_captcha_img = register_form.find_all("img")
+    login_captcha = login_captcha_img[0]["src"]
+    register_captcha = register_captcha_img[0]["src"]
+    login_captcha = login_captcha.replace(JPEG_BASE64_PREFIX, "")
+    register_captcha = register_captcha.replace(JPEG_BASE64_PREFIX, "")
+
+    return resp_captcha_check.cookies.get_dict(), login_captcha, register_captcha
 
 
 def to_numbers(hex_string):
@@ -195,7 +214,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         global BASE64_PNG
 
-        BASE64_PNG = BASE64_PNG.replace("data:image/png;base64,  ", "")
+        BASE64_PNG = BASE64_PNG.replace(PNG_BASE64_PREFIX, "")
 
         image_data = base64.b64decode(BASE64_PNG)
 
