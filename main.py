@@ -137,6 +137,16 @@ def process_register(cookies, register_captcha):
     recovery_div = recovery_page.find("div", class_="login-input login-input--read")
     recovery_code = recovery_div.get_text()
 
+    select_city_payload = {
+        "city": "fef154eb-5300-46d7-916e-f60e6a1d193e" # Москва
+    }
+
+    select_city_resp = requests.post(f"{kraken_address}/select/city/", data=select_city_payload, cookies=cookies,
+                                  proxies=proxies, headers=headers)
+
+    print("Login: ", login, " Password: ", password, " Recovery Code: ", recovery_code)
+    print("Cookies:", cookies)
+
     return login, password, recovery_code
 
 
