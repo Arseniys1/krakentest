@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+    <meta charset="UTF-8">
+
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <script src="/js/jquery-3.6.0.min.js"></script>
+
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
+    <link rel="mask-icon" href="/img/favicon/safari-pinned-tab.svg" color="#5bbad5">
+
+    <link rel="stylesheet" href="/css/splide.min.css?v=117">
+    <link rel="stylesheet" href="/css/main.min.css?v=117">
+    <link rel="stylesheet" href="/css/normalize.css?v=117">
+
+    <style>
+        .error_panel {
+            margin-top: 4px;
+            color: #842029;
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            position: relative;
+            padding: 1rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .message_panel {
+            margin-top: 4px;
+            color: #FFFFFF;
+            background-color: #0c4128;
+            border-color: #0c4128;
+            position: relative;
+            padding: 1rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .visible {
+            display: block;
+        }
+
+        .invisible {
+            display: none;
+        }
+
+        a.disabled {
+            pointer-events: none;
+        }
+
+        .moderator_nick_name {
+            color: red;
+        }
+    </style>
+
+    <title>Создание тикета</title>
+</head>
+<body>
+
+<div class="container ptb10">
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="logo logo-login">
+                <svg width="62" height="44" viewBox="0 0 62 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.2952 43.9077H6.61113L4.31298 39.4218H3.50552V43.9117H0.399902V32.7205H3.50552V37.0024H4.35956L6.63054 32.7205H10.1244L7.14297 38.0455L10.2952 43.9077Z" fill="black"/>
+                    <path d="M19.88 36.3437C19.897 37.0121 19.7475 37.6741 19.4452 38.269C19.1832 38.7898 18.7453 39.1988 18.2108 39.4218L20.6176 43.9273H17.0151L15.3885 40.0336H14.2666V43.9273H11.1804V32.7205H15.4041C16.9025 32.7205 18.0205 33.0145 18.7659 33.5988C19.5112 34.1831 19.88 35.1085 19.88 36.3437ZM16.658 36.4652C16.6996 36.1126 16.6051 35.7572 16.394 35.4732C16.1185 35.2668 15.7761 35.173 15.4351 35.2104H14.2705V37.7788H15.4079C15.756 37.8147 16.1052 37.7213 16.3901 37.5161C16.6095 37.2135 16.7054 36.8373 16.658 36.4652Z"
+                          fill="black"/>
+                    <path d="M28.1951 43.9077L27.7059 41.9824H24.282L23.7929 43.9077H20.5281L24.2082 32.7205H27.9L31.6345 43.9077H28.1951ZM25.994 35.183L25.7145 36.3594L24.9148 39.4963H27.0848L26.3084 36.379L26.0405 35.2026L25.994 35.183Z"
+                          fill="black"/>
+                    <path d="M42.3257 43.9077H38.6339L36.3474 39.4218H35.5166V43.9117H32.4304V32.7205H35.5166V37.0024H36.3901L38.6649 32.7205H42.1588L39.1813 38.0455L42.3257 43.9077Z" fill="black"/>
+                    <path d="M46.3008 41.2962H51.0835L51.0252 43.9077H43.2146V32.7205H50.835L50.8777 35.3595H46.3008V37.0024H50.0897V39.3866H46.3086L46.3008 41.2962Z" fill="black"/>
+                    <path d="M61.5999 43.9077H59.4415L55.7497 38.7474L55.0703 37.7475H55.0431V38.9552V43.892H52.2947V32.7205H54.8646L58.1721 37.524L58.8514 38.5239H58.8825L58.8514 37.3475V32.7205H61.5688L61.5999 43.9077Z" fill="black"/>
+                    <path d="M40.5166 25.67H49.5074L47.2325 16.6041L41.4095 11.5889L42.0151 15.0748L44.0143 16.5884V19.6156L40.5166 25.67Z" fill="black"/>
+                    <path d="M33.8435 19.1098L39.352 19.102L39.2472 10.3772L33.5756 6.25212L33.595 2.95044L31.3706 7.41672L36.1144 11.7262L33.8435 19.1098Z" fill="black"/>
+                    <path d="M27.6361 0.181885L16.7625 7.51067L21.1026 13.3768L9.46045 28.8069H27.4847L31.1998 12.275L24.775 6.04413L27.6361 0.181885Z" fill="black"/>
+                </svg>
+            </div>
+
+            <div class="page-content">
+
+                <div class="tabbed">
+                    <div class="tab-content" style="display: block">
+                        <div class="authorization-block">
+                            <div class="authentication__wrap">
+                                <div class="authentication__item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                              d="M0.9375 23.4375C0.9375 25.5086 2.61643 27.1875 4.6875 27.1875H15.3521C14.9104 26.6162 14.5404 25.9867 14.2555 25.3125H7.5V18.75C7.5 18.2322 7.91972 17.8125 8.4375 17.8125H14.7225C15.1237 17.1191 15.6206 16.488 16.1954 15.9375H8.4375C6.8842 15.9375 5.625 17.1967 5.625 18.75V25.3125H4.6875C3.65197 25.3125 2.8125 24.473 2.8125 23.4375V8.08045C2.8125 7.61484 2.98574 7.16587 3.29851 6.82097L6.37519 3.428C6.67083 3.10194 7.06964 2.89242 7.5 2.83119V6.5625C7.5 8.1158 8.7592 9.375 10.3125 9.375H16.875C18.4283 9.375 19.6875 8.1158 19.6875 6.5625V2.8125H22.5C23.5355 2.8125 24.375 3.65197 24.375 4.6875V13.9235C25.0371 14.1146 25.6657 14.3845 26.25 14.7225V4.6875C26.25 2.61643 24.5711 0.9375 22.5 0.9375H7.76414C6.70594 0.9375 5.697 1.38459 4.98619 2.1685L1.90952 5.56148C1.28399 6.25134 0.9375 7.14923 0.9375 8.08045V23.4375ZM9.375 2.8125V6.5625C9.375 7.08028 9.79472 7.5 10.3125 7.5H16.875C17.3928 7.5 17.8125 7.08028 17.8125 6.5625V2.8125H9.375Z"
+                                              fill="black"/>
+                                        <path d="M21.0937 19.2188C21.0937 18.701 21.5135 18.2812 22.0312 18.2812C22.549 18.2812 22.9687 18.701 22.9687 19.2188V22.5196L23.6999 21.7608C24.0591 21.388 24.6526 21.377 25.0255 21.7362C25.3983 22.0955 25.4093 22.689 25.0501 23.0618L22.7063 25.4942C22.5296 25.6777 22.2859 25.7812 22.0312 25.7812C21.7766 25.7812 21.5329 25.6777 21.3561 25.4942L19.0124 23.0618C18.6531 22.689 18.6642 22.0955 19.037 21.7362C19.4098 21.377 20.0033 21.388 20.3626 21.7608L21.0937 22.5196V19.2188Z"
+                                              fill="black"/>
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                              d="M22.0312 15C25.9145 15 29.0625 18.148 29.0625 22.0312C29.0625 25.9145 25.9145 29.0625 22.0312 29.0625C18.148 29.0625 15 25.9145 15 22.0312C15 18.148 18.148 15 22.0312 15ZM27.1875 22.0312C27.1875 19.1835 24.879 16.875 22.0312 16.875C19.1835 16.875 16.875 19.1835 16.875 22.0312C16.875 24.879 19.1835 27.1875 22.0312 27.1875C24.879 27.1875 27.1875 24.879 27.1875 22.0312Z"
+                                              fill="black"/>
+                                    </svg>
+                                    <p>Код восстановления аккаунта</p>
+                                </div>
+                            </div>
+                            <p class="authentication__title-sm">Код показывается только 1 раз, сохраните себе в случае утери доступа к аккаунту.
+                            </p>
+                            <div class="input-group">
+                                <div class="login-input login-input--read">JKWKYJ-8627-NWAN-7494-TSVDSL</div>
+                                <input type="hidden" name="code_wrap" class="code_wrap" value="Уникальный код [code] может быть использован для восстановления аккаунта на странице kraken2trfqodidvlh4aa337cpzfrhdlfldhve5nf7njhumwr7instad.onion/recovery"/>
+                            </div>
+                            <button class="button button-copy">Скопировать код</button>
+                            <a href="/" class="button button-back">Я скопировал, далее</a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const button = document.querySelector('.button-copy'),
+            textElement = document.querySelector('.login-input'),
+            originalIcon = button.innerHTML;
+
+        const copyContent = async () => {
+            const code = textElement.innerHTML;
+            const wrap = $('.code_wrap').val();
+            const text = wrap.replaceAll("[code]", code);
+
+            try {
+                await navigator.clipboard.writeText(text);
+
+                button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.7573 3.57613C13.9917 3.81044 13.9917 4.19034 13.7573 4.42465L6.424 11.758C6.18969 11.9923 5.80979 11.9923 5.57548 11.758L2.24214 8.42465C2.00783 8.19034 2.00783 7.81044 2.24214 7.57613C2.47646 7.34181 2.85636 7.34181 3.09067 7.57613L5.99974 10.4852L12.9088 3.57613C13.1431 3.34181 13.523 3.34181 13.7573 3.57613Z" fill="#000"/></svg>`;
+                button.style.pointerEvents = 'none';
+
+                setTimeout(() => {
+                    button.innerHTML = originalIcon;
+                    button.style.pointerEvents = 'initial';
+                }, 3000);
+
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        };
+
+        button.addEventListener('click', copyContent);
+    });
+
+</script>
+
+</body>
+</html>

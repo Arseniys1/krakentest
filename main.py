@@ -7,6 +7,7 @@ import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from bs4 import BeautifulSoup
+from faker.proxy import Faker
 
 kraken_address = "http://omgomgomgzdayo2ay7sexbbsaxwd6dxikiw3be6ed2aoe7juxvigdkad.onion"
 proxies = {
@@ -18,7 +19,10 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
 }
 
-BASE64_PNG = ""
+CAPTCHA_IMG = ""
+CONTENT_TYPE_PNG = "image/png"
+CONTENT_TYPE_JPEG = "image/jpeg"
+CONTENT_TYPE = CONTENT_TYPE_PNG
 
 server_thread = None
 
@@ -28,16 +32,17 @@ JPEG_BASE64_PREFIX = "data:image/jpeg;charset=utf-8;base64, "
 
 def main():
     start_server_async()
-    index_captcha_bypass()
+    cookies, login_captcha, register_captcha = process_index_captcha_bypass()
+    process_register(cookies, register_captcha)
 
 
-def index_captcha_bypass():
-    global BASE64_PNG
+def process_index_captcha_bypass():
+    global CAPTCHA_IMG
 
     resp_index = requests.get(kraken_address, proxies=proxies, headers=headers)
     resp_captcha = requests.get(f"{kraken_address}/captcha", cookies=resp_index.cookies.get_dict(), proxies=proxies,
                                 headers=headers)
-    BASE64_PNG = resp_captcha.text
+    CAPTCHA_IMG = resp_captcha.text.replace(PNG_BASE64_PREFIX, "")
     print("Капча обновлена")
 
     captcha = input("Enter Captcha Code: ")
@@ -69,7 +74,7 @@ def index_captcha_bypass():
     user_id = parsed_html.find("input", attrs={"name": "userId"})["value"]
     fate = parsed_html.find("input", attrs={"name": "fate"})["value"]
 
-    BASE64_PNG = captcha_base64
+    CAPTCHA_IMG = captcha_base64.replace(PNG_BASE64_PREFIX, "")
     print("Капча обновлена")
 
     captcha = input("Enter Captcha Code: ")
@@ -100,7 +105,43 @@ def index_captcha_bypass():
     login_captcha = login_captcha.replace(JPEG_BASE64_PREFIX, "")
     register_captcha = register_captcha.replace(JPEG_BASE64_PREFIX, "")
 
-    return resp_captcha_check.cookies.get_dict(), login_captcha, register_captcha
+    return captcha_check_cookies, login_captcha, register_captcha
+
+
+def process_register(cookies, register_captcha):
+    global CAPTCHA_IMG, CONTENT_TYPE
+
+    CAPTCHA_IMG = register_captcha
+    CONTENT_TYPE = CONTENT_TYPE_JPEG
+    print("Капча обновлена")
+    captcha = input("Enter Captcha Code: ")
+
+    fake = Faker("en")
+    login = fake.pystr(min_chars=8, max_chars=20)
+    display_name = fake.pystr(min_chars=8, max_chars=20)
+    password = fake.password(length=15)
+
+    register_payload = {
+        "timezoneoffset": 0,
+        "login": login,
+        "display_name": display_name,
+        "password1": password,
+        "password2": password,
+        "captcha": captcha.upper(),
+    }
+
+    register_resp = requests.post(f"{kraken_address}/entry/post/register", data=register_payload, cookies=cookies,
+                                  proxies=proxies, headers=headers)
+
+    recovery_page = BeautifulSoup(register_resp.text, "html.parser")
+    recovery_div = recovery_page.find("div", class_="login-input login-input--read")
+    recovery_code = recovery_div.get_text()
+
+    return login, password, recovery_code
+
+
+def process_login(cookies, login_captcha, username, password):
+    pass
 
 
 def to_numbers(hex_string):
@@ -110,8 +151,9 @@ def to_numbers(hex_string):
     if len(hex_string) % 2 != 0:
         hex_string = '0' + hex_string  # Добавляем ведущий ноль если необходимо
     for i in range(0, len(hex_string), 2):
-        result.append(int(hex_string[i:i+2], 16))
+        result.append(int(hex_string[i:i + 2], 16))
     return result
+
 
 def to_hex(numbers):
     """Аналог функции toHex из JavaScript"""
@@ -212,16 +254,14 @@ def extract_and_decrypt(a, b, c):
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
-        global BASE64_PNG
+        global CAPTCHA_IMG
 
-        BASE64_PNG = BASE64_PNG.replace(PNG_BASE64_PREFIX, "")
-
-        image_data = base64.b64decode(BASE64_PNG)
+        image_data = base64.b64decode(CAPTCHA_IMG)
 
         if self.path == '/':
             # Отправляем заголовки
             self.send_response(200)
-            self.send_header('Content-Type', 'image/png')
+            self.send_header('Content-Type', CONTENT_TYPE)
             self.send_header('Content-Length', str(len(image_data)))
             self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
             self.send_header('Pragma', 'no-cache')
